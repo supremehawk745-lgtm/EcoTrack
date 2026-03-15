@@ -16,14 +16,14 @@
                 --glass: rgba(255, 255, 255, 0.03);
                 --glass-border: rgba(255, 255, 255, 0.08);
                 --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-                --text-main: #f8fafc;
-                --text-muted: #e2e8f0;
+                --text-main: #ffffff;
+                --text-muted: #ffffff;
                 --accent: #fbbf24;
             }
 
             ::placeholder {
-                color: #e2e8f0;
-                opacity: 0.6;
+                color: #ffffff;
+                opacity: 0.7;
             }
 
             * {
@@ -96,9 +96,10 @@
             .subtitle {
                 color: var(--text-muted);
                 text-align: center;
-                margin-bottom: 2rem;
+                margin-bottom: 1.25rem;
                 font-weight: 300;
                 font-size: 1.1rem;
+                opacity: 0.9;
             }
 
             .live-view {
@@ -133,11 +134,12 @@
                 border: 1px solid var(--glass-border);
                 border-radius: 1.25rem;
                 padding: 1.25rem;
-                color: var(--text-main);
+                color: #ffffff;
                 font-size: 1rem;
                 resize: none;
                 transition: all 0.3s ease;
-                margin-bottom: 1.5rem;
+                margin-bottom: 1rem;
+                min-height: 100px;
             }
 
             textarea:focus {
@@ -194,7 +196,7 @@
             .status-badge {
                 font-size: 0.85rem;
                 text-align: center;
-                margin: 1.5rem 0;
+                margin: 0.75rem 0;
                 color: var(--text-muted);
                 display: flex;
                 align-items: center;
@@ -219,17 +221,17 @@
             .manual-location-box {
                 background: rgba(255, 255, 255, 0.02);
                 border-radius: 1.5rem;
-                padding: 1.5rem;
+                padding: 1.25rem;
                 border: 1px solid var(--glass-border);
-                margin-top: 1.5rem;
+                margin-top: 1rem;
             }
 
             .manual-location-box h3 {
                 font-size: 0.9rem;
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
-                color: var(--text-muted);
-                margin-bottom: 1rem;
+                color: #ffffff;
+                margin-bottom: 0.75rem;
             }
 
             select, input[type="text"] {
