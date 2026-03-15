@@ -1,10 +1,8 @@
 const express = require('express');
 const { z } = require('zod');
-const { HfInference } = require('@huggingface/inference');
 const Report = require('../models/Report');
 
 const router = express.Router();
-const hf = new HfInference(process.env.HF_ACCESS_TOKEN);
 
 const reportSchema = z.object({
   imageUrl: z.string().min(10, "Image data is required"),
@@ -26,39 +24,6 @@ router.post('/report', async (req, res) => {
   try {
     // Validate request body
     const validatedData = reportSchema.parse(req.body);
-
-    try {
-      // Decode Base64 image
-      const base64Data = validatedData.imageUrl.replace(/^data:image\/\w+;base64,/, "");
-      const imageBuffer = Buffer.from(base64Data, 'base64');
-      const blob = new Blob([imageBuffer], { type: 'image/jpeg' });
-
-      // Run AI Object Detection
-      const labels = await hf.imageClassification({
-        data: blob,
-        model: 'google/vit-base-patch16-224' 
-      });
-
-      console.log("AI Detected labels:", labels);
-
-      // Check if the AI strongly thinks this is just a person/face
-      const personLikelihood = labels.find(l => 
-        l.label.toLowerCase().includes('person') || 
-        l.label.toLowerCase().includes('face') || 
-        l.label.toLowerCase().includes('man') || 
-        l.label.toLowerCase().includes('woman')
-      );
-
-      if (personLikelihood && personLikelihood.score > 0.4) {
-         return res.status(400).json({ 
-           error: `AI rejected upload: Detected a person (${(personLikelihood.score * 100).toFixed(1)}% confidence). Please only upload pictures of pollution.` 
-         });
-      }
-
-    } catch (aiError) {
-      console.error("AI Verification failed, bypassing for now:", aiError.message);
-      // We log the error but let it pass if HF API is down/rate-limited temporarily
-    }
 
     const newReport = new Report(validatedData);
     const savedReport = await newReport.save();

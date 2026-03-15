@@ -6,10 +6,6 @@ const routes = require('./routes/index');
 
 const app = express();
 
-if (!process.env.HF_ACCESS_TOKEN) {
-  console.warn("⚠️  HF_ACCESS_TOKEN is missing in .env. AI Vision might fail or be rate-limited.");
-}
-
 // Connect to database
 connectDB();
 
