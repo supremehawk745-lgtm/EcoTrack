@@ -1037,7 +1037,7 @@
                     card.className = 'report-card';
 
                     // Parse date for relative time or clean format
-                    const date = new Date(report.createdAt);
+                    const date = new Date(report.timestamp);
                     const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                     const dateStr = date.toLocaleDateString();
 
