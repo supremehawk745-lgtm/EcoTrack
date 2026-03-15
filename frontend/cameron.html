@@ -492,7 +492,7 @@
             </div>
 
             <div class="instruction">
-                Point your camera at the pollution source, describe the issue, and tap below.
+                Point your camera at the pollution source, describe the issue, and tap below. Your GPS location is captured automatically.
             </div>
 
             <textarea id="descriptionInput"
@@ -506,7 +506,7 @@
             </div>
 
             <div id="manualLocationBox" class="manual-location-box">
-                <h3>Refine Your Location</h3>
+                <h3>Correct Your Location <span style="font-weight:300;opacity:0.7;">(Optional)</span></h3>
                 <select id="parishSelect">
                     <option value="">Select Parish</option>
                     <option value="Kingston">Kingston</option>
@@ -790,28 +790,9 @@
             }
 
             function takePicture() {
-                // Check if camera is ready
+                // Check if camera is ready — only gate is the camera itself
                 if (!streaming) {
                     showError('Camera not ready. Please wait.');
-                    return;
-                }
-
-                // Check location status and show appropriate message
-                if (!locationResolved) {
-                    if (useManualLocation) {
-                        showError('Please enter your parish and community first');
-                        manualLocationBox.style.display = 'block';
-                    } else {
-                        showError('Waiting for location... You can enter manually below');
-                        manualLocationBox.style.display = 'block';
-                    }
-                    return;
-                }
-
-                // If using manual location but not saved yet
-                if (useManualLocation && (!manualParish || !manualCommunity)) {
-                    showError('Please save your location first');
-                    manualLocationBox.style.display = 'block';
                     return;
                 }
 
