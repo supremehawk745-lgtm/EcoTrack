@@ -4,329 +4,481 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>EcoTrack</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
         <style>
+            :root {
+                --primary: #10b981;
+                --primary-dark: #059669;
+                --bg-deep: #022c22;
+                --bg-gradient: linear-gradient(135deg, #022c22 0%, #064e3b 100%);
+                --glass: rgba(255, 255, 255, 0.03);
+                --glass-border: rgba(255, 255, 255, 0.08);
+                --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+                --text-main: #f8fafc;
+                --text-muted: #94a3b8;
+                --accent: #fbbf24;
+            }
+
             * {
                 box-sizing: border-box;
-                font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-            }
-            body {
-                background: linear-gradient(145deg, #f5ea58 0%, #e6d705 100%);
-                min-height: 100vh;
                 margin: 0;
-                display: flex;
-                justify-content: center;
-                align-items: center;
+                padding: 0;
+                font-family: 'Outfit', sans-serif;
             }
-            .card {
-                background: rgba(255, 255, 255, 0.1);
-                backdrop-filter: blur(10px);
-                border-radius: 2.5rem;
-                padding: 2rem;
-                box-shadow: 0 30px 45px -15px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.2);
-                border: 1px solid rgba(255,255,255,0.2);
-                width: fit-content;
-                max-width: 600px;
+
+            body {
+                background: var(--bg-deep);
+                background-attachment: fixed;
+                min-height: 100vh;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
+                padding: 2rem 1rem;
+                color: var(--text-main);
+                overflow-x: hidden;
             }
-            h1 {
-                color: #015e18;
-                font-family: 'Courier New', Courier, monospace;
-                font-size: 2.5rem;
-                margin: 0 0 0.5rem 0;
-                letter-spacing: 2px;
-            }
-            .live-view {
-                background: #11161c;
-                border-radius: 1.8rem;
-                padding: 1rem;
-                box-shadow: inset 0 5px 10px rgba(0,0,0,0.6), 0 10px 15px -5px black;
-                border: 1px solid #4d697e;
-                width: 100%;
-                margin: 1rem 0;
-            }
-            video {
-                width: 100%;
-                max-width: 560px;
-                height: auto;
-                border-radius: 1.2rem;
-                display: block;
-                background: black;
-                transform: scaleX(-1);
-            }
-            .instruction {
-                color: #1d1d25;
-                font-size: 1.1rem;
-                font-weight: 500;
-                font-family: 'Courier New', Courier, monospace;
-                margin: 1rem 0;
-                background: rgba(255,255,255,0.3);
-                padding: 0.6rem 1.5rem;
-                border-radius: 3rem;
-                border: 1px solid #015e18;
-            }
-            .camera-button {
-                background: #015e18;
-                border: none;
-                width: 80px;
-                height: 80px;
-                border-radius: 50%;
-                cursor: pointer;
-                color: #dfbf0f;
-                box-shadow: 0 8px 0 #0f1f2b, 0 10px 20px rgba(0,0,0,0.3);
-                transition: 0.08s linear;
-                border: 2px solid #cdedff;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 2rem;
-                margin: 1rem auto;
-            }
-            .camera-button:active {
-                transform: translateY(6px);
-                box-shadow: 0 2px 0 #11161c, 0 8px 16px rgba(0,0,0,0.4);
-            }
-            .camera-button.flash {
-                animation: flash-animation 0.3s ease-out;
-            }
-            @keyframes flash-animation {
-                0% { background: #fff; transform: scale(1.1); }
-                100% { background: #015e18; transform: scale(1); }
-            }
-            .screen-flash {
+
+            body::before {
+                content: '';
                 position: fixed;
                 top: 0;
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: white;
-                opacity: 0;
-                pointer-events: none;
-                z-index: 9999;
-            }
-            .screen-flash.active {
-                animation: screen-flash-animation 0.2s ease-out;
-            }
-            @keyframes screen-flash-animation {
-                0% { opacity: 0.8; }
-                100% { opacity: 0; }
-            }
-            .camera-button:disabled {
-                opacity: 0.4;
-                transform: translateY(4px);
-                box-shadow: 0 4px 0 #11161c;
+                background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.03) 0%, transparent 70%);
                 pointer-events: none;
             }
-            .status-badge {
-                background: #015e18;
-                color: #dfbf0f;
-                padding: 0.4rem 1rem;
+
+            .container {
+                width: 100%;
+                max-width: 580px;
+                z-index: 1;
+            }
+
+            .card {
+                background: var(--glass);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                border: 1px solid var(--glass-border);
                 border-radius: 2rem;
-                font-size: 0.8rem;
-                margin: 0.5rem 0;
-                border: 1px solid #cdedff;
+                padding: 2.5rem;
+                box-shadow: var(--glass-glow);
+                margin-bottom: 2rem;
+                position: relative;
+                overflow: hidden;
+                animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
             }
+
+            @keyframes slideUp {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            h1 {
+                font-weight: 800;
+                font-size: 2.5rem;
+                background: linear-gradient(to right, #10b981, #34d399);
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+                margin-bottom: 0.5rem;
+                letter-spacing: -0.02em;
+                text-align: center;
+            }
+
+            .subtitle {
+                color: var(--text-muted);
+                text-align: center;
+                margin-bottom: 2rem;
+                font-weight: 300;
+                font-size: 1.1rem;
+            }
+
+            .live-view {
+                background: #000;
+                border-radius: 1.5rem;
+                overflow: hidden;
+                border: 1px solid var(--glass-border);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+                margin: 1.5rem 0;
+                aspect-ratio: 4/3;
+                position: relative;
+            }
+
+            video {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transform: scaleX(-1);
+            }
+
+            .instruction {
+                font-size: 0.95rem;
+                color: var(--text-muted);
+                text-align: center;
+                margin-bottom: 1.5rem;
+                line-height: 1.6;
+            }
+
+            textarea {
+                width: 100%;
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid var(--glass-border);
+                border-radius: 1.25rem;
+                padding: 1.25rem;
+                color: var(--text-main);
+                font-size: 1rem;
+                resize: none;
+                transition: all 0.3s ease;
+                margin-bottom: 1.5rem;
+            }
+
+            textarea:focus {
+                outline: none;
+                border-color: var(--primary);
+                background: rgba(255, 255, 255, 0.05);
+                box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+            }
+
+            .camera-button {
+                background: var(--primary);
+                border: none;
+                width: 90px;
+                height: 90px;
+                border-radius: 50%;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto;
+                font-size: 2.25rem;
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+                position: relative;
+                z-index: 2;
+            }
+
+            .camera-button:hover {
+                transform: scale(1.1) rotate(5deg);
+                background: var(--primary-dark);
+                box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+            }
+
+            .camera-button:active {
+                transform: scale(0.95);
+            }
+
+            .camera-button:disabled {
+                background: var(--text-muted);
+                opacity: 0.3;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+            .camera-button.flash {
+                animation: buttonFlash 0.4s ease-out;
+            }
+
+            @keyframes buttonFlash {
+                0% { background: #fff; transform: scale(1.2); }
+                100% { background: var(--primary); transform: scale(1); }
+            }
+
+            .status-badge {
+                font-size: 0.85rem;
+                text-align: center;
+                margin: 1.5rem 0;
+                color: var(--text-muted);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+
+            .status-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: var(--accent);
+                animation: pulse 2s infinite;
+            }
+
+            @keyframes pulse {
+                0% { opacity: 1; transform: scale(1); }
+                50% { opacity: 0.4; transform: scale(1.2); }
+                100% { opacity: 1; transform: scale(1); }
+            }
+
             .manual-location-box {
-                background: rgba(255, 255, 255, 0.3);
+                background: rgba(255, 255, 255, 0.02);
                 border-radius: 1.5rem;
                 padding: 1.5rem;
-                margin: 1rem 0;
-                width: 100%;
-                border: 2px solid #015e18;
-                display: none;
+                border: 1px solid var(--glass-border);
+                margin-top: 1.5rem;
             }
+
             .manual-location-box h3 {
-                color: #015e18;
-                margin: 0 0 1rem 0;
-                font-family: 'Courier New', Courier, monospace;
-            }
-            select, input {
-                width: 100%;
-                padding: 0.8rem;
-                margin: 0.5rem 0;
-                border-radius: 2rem;
-                border: 2px solid #015e18;
-                background: rgba(255,255,255,0.9);
-                font-size: 1rem;
-                color: #1d1d25;
-            }
-            select {
-                cursor: pointer;
-            }
-            input {
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: var(--text-muted);
                 margin-bottom: 1rem;
             }
+
+            select, input[type="text"] {
+                width: 100%;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid var(--glass-border);
+                border-radius: 1rem;
+                padding: 0.85rem 1rem;
+                color: var(--text-main);
+                margin-bottom: 0.75rem;
+                font-size: 0.95rem;
+            }
+
+            select option {
+                background: var(--bg-deep);
+                color: white;
+            }
+
             .manual-submit {
-                background: #015e18;
-                color: #dfbf0f;
-                border: none;
-                padding: 0.8rem 2rem;
-                border-radius: 2rem;
-                font-size: 1rem;
-                font-weight: bold;
-                cursor: pointer;
+                background: transparent;
+                border: 1px solid var(--primary);
+                color: var(--primary);
                 width: 100%;
-                transition: 0.1s;
-            }
-            .manual-submit:hover {
-                transform: scale(1.02);
-            }
-            .manual-submit:active {
-                transform: scale(0.98);
-            }
-            .manual-submit:disabled {
-                opacity: 0.5;
-                cursor: not-allowed;
-            }
-            #errorMsg {
-                color: #ffb0a0;
-                background: #424a1e;
-                padding: 0.8rem 1.5rem;
-                border-radius: 3rem;
-                font-weight: 500;
-                margin-top: 1rem;
-                border-left: 5px solid #ff6b6b;
-                display: none;
-                text-align: center;
-            }
-            #successMsg {
-                color: #015e18;
-                background: rgba(255,255,255,0.8);
-                padding: 0.8rem 1.5rem;
-                border-radius: 3rem;
-                font-weight: 500;
-                margin-top: 1rem;
-                border-left: 5px solid #015e18;
-                display: none;
-                text-align: center;
-            }
-            canvas {
-                display: none;
-            }
-            .feed-container {
-                width: 100%;
-                max-width: 600px;
-                margin-top: 2rem;
-                padding: 1rem;
-                background: rgba(255, 255, 255, 0.15);
-                backdrop-filter: blur(12px);
-                border-radius: 2.5rem;
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                box-shadow: 0 15px 25px rgba(0,0,0,0.1);
-            }
-            .feed-title {
-                color: #015e18;
-                font-family: 'Courier New', Courier, monospace;
-                font-size: 1.5rem;
-                margin-bottom: 1rem;
-                text-align: center;
-                border-bottom: 2px solid #015e18;
-                padding-bottom: 0.5rem;
-            }
-            .report-card {
-                background: rgba(255, 255, 255, 0.9);
-                border-radius: 1.5rem;
-                margin-bottom: 1rem;
-                overflow: hidden;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-                transition: transform 0.2s;
-                border: 1px solid #015e18;
-            }
-            .report-card:hover {
-                transform: translateY(-5px);
-            }
-            .report-image {
-                width: 100%;
-                height: 200px;
-                object-fit: cover;
-                border-bottom: 1px solid #eee;
-            }
-            .report-content {
-                padding: 1rem;
-            }
-            .report-desc {
-                color: #1d1d25;
+                padding: 0.85rem;
+                border-radius: 1rem;
                 font-weight: 600;
-                margin-bottom: 0.5rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
             }
-            .report-meta {
-                font-size: 0.8rem;
-                color: #555;
+
+            .manual-submit:hover {
+                background: var(--primary);
+                color: white;
+            }
+
+            #errorMsg, #successMsg {
+                margin-top: 1.5rem;
+                padding: 1rem 1.5rem;
+                border-radius: 1.25rem;
+                font-size: 0.9rem;
+                text-align: center;
+                display: none;
+                animation: fadeIn 0.3s ease;
+            }
+
+            #errorMsg {
+                background: rgba(239, 68, 68, 0.1);
+                color: #f87171;
+                border: 1px solid rgba(239, 68, 68, 0.2);
+            }
+
+            #successMsg {
+                background: rgba(16, 185, 129, 0.1);
+                color: #34d399;
+                border: 1px solid rgba(16, 185, 129, 0.2);
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            .feed-container {
+                margin-top: 2rem;
+            }
+
+            .feed-title {
+                font-weight: 600;
+                font-size: 1.25rem;
+                margin-bottom: 1.5rem;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+
+            .feed-title::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: var(--glass-border);
+            }
+
+            .report-card {
+                background: var(--glass);
+                backdrop-filter: blur(8px);
+                border: 1px solid var(--glass-border);
+                border-radius: 1.5rem;
+                margin-bottom: 1.25rem;
+                overflow: hidden;
+                display: flex;
+                gap: 1.25rem;
+                padding: 1.25rem;
+                transition: transform 0.3s ease, background 0.3s ease;
+            }
+
+            .report-card:hover {
+                transform: translateY(-4px);
+                background: rgba(255, 255, 255, 0.05);
+            }
+
+            .report-image-container {
+                width: 140px;
+                height: 140px;
+                flex-shrink: 0;
+                border-radius: 1rem;
+                overflow: hidden;
+                border: 1px solid var(--glass-border);
+            }
+
+            .report-image-container img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .report-info {
+                flex: 1;
                 display: flex;
                 flex-direction: column;
-                gap: 0.3rem;
+                justify-content: center;
             }
+
+            .report-desc {
+                font-weight: 600;
+                font-size: 1.05rem;
+                margin-bottom: 0.5rem;
+                line-height: 1.4;
+                color: var(--text-main);
+            }
+
+            .report-location {
+                font-size: 0.85rem;
+                color: var(--text-muted);
+                display: flex;
+                align-items: center;
+                gap: 0.4rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .report-time {
+                font-size: 0.8rem;
+                color: var(--primary);
+                font-weight: 600;
+            }
+
             .report-link {
-                color: #015e18;
+                margin-top: 0.75rem;
+                font-size: 0.85rem;
+                color: var(--accent);
                 text-decoration: none;
-                font-weight: bold;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.25rem;
             }
+
             .report-link:hover {
                 text-decoration: underline;
             }
+
             .loading-feed {
                 text-align: center;
-                padding: 2rem;
-                color: #015e18;
-                font-weight: bold;
+                color: var(--text-muted);
+                padding: 3rem;
+                font-weight: 300;
+            }
+
+            .screen-flash {
+                position: fixed;
+                inset: 0;
+                background: white;
+                z-index: 100;
+                pointer-events: none;
+                opacity: 0;
+            }
+
+            .screen-flash.active {
+                animation: flashEffect 0.4s ease-out;
+            }
+
+            @keyframes flashEffect {
+                0% { opacity: 0.6; }
+                100% { opacity: 0; }
+            }
+
+            /* Mobile Optimizations */
+            @media (max-width: 480px) {
+                .container { padding: 0 0.5rem; }
+                .card { padding: 1.5rem; }
+                .report-card { flex-direction: column; }
+                .report-image-container { width: 100%; height: 200px; }
             }
         </style>
     </head>
     <body>
         <div class="screen-flash" id="screenFlash"></div>
-        <div class="card">
-            <h1>EcoTracker</h1>
-            
-            <div class="live-view">
-                <video id="video" autoplay playsinline></video>
-            </div>
-            
-            <div class="instruction">
-                Point camera at garbage, enter description, and tap the button
+        <div class="container">
+            <div class="card">
+                <h1>EcoTrack</h1>
+                <p class="subtitle">Protecting Jamaica, one report at a time.</p>
+                
+                <div class="live-view">
+                    <video id="video" autoplay playsinline></video>
+                </div>
+                
+                <div class="instruction">
+                    Point your camera at the pollution source, describe the issue, and tap below.
+                </div>
+
+                <textarea id="descriptionInput" placeholder="Describe the pollution (e.g., plastic waste, illegal dumping)..."></textarea>
+                
+                <button class="camera-button" id="captureBtn" disabled>📸</button>
+
+                <div id="locationStatus" class="status-badge">
+                    <div class="status-dot"></div>
+                    <span>Initializing location services...</span>
+                </div>
+                
+                <div id="manualLocationBox" class="manual-location-box">
+                    <h3>Refine Your Location</h3>
+                    <select id="parishSelect">
+                        <option value="">Select Parish</option>
+                        <option value="Kingston">Kingston</option>
+                        <option value="St. Andrew">St. Andrew</option>
+                        <option value="St. Thomas">St. Thomas</option>
+                        <option value="Portland">Portland</option>
+                        <option value="St. Mary">St. Mary</option>
+                        <option value="St. Ann">St. Ann</option>
+                        <option value="Trelawny">Trelawny</option>
+                        <option value="St. James">St. James</option>
+                        <option value="Hanover">Hanover</option>
+                        <option value="Westmoreland">Westmoreland</option>
+                        <option value="St. Elizabeth">St. Elizabeth</option>
+                        <option value="Manchester">Manchester</option>
+                        <option value="Clarendon">Clarendon</option>
+                        <option value="St. Catherine">St. Catherine</option>
+                    </select>
+                    <input type="text" id="communityInput" placeholder="Enter Community/District Name">
+                    <button class="manual-submit" id="submitManualLocation">Update Location</button>
+                </div>
+                
+                <canvas id="canvas"></canvas>
+                
+                <div id="errorMsg"></div>
+                <div id="successMsg"></div>
             </div>
 
-            <textarea id="descriptionInput" placeholder="Describe the pollution (e.g., plastic waste, oil spill)" style="width: 100%; padding: 1rem; border-radius: 1.5rem; border: 2px solid #015e18; margin-bottom: 1rem; font-size: 1rem;"></textarea>
-            
-            <!-- Camera button - enabled as soon as camera is ready -->
-            <button class="camera-button" id="captureBtn" disabled>📸</button>
-
-            <div id="locationStatus" class="status-badge">Checking location...</div>
-            
-            <!-- Manual Location Input Box - now always visible for refinement -->
-            <div id="manualLocationBox" class="manual-location-box" style="display: block; margin-top: 0.5rem;">
-                <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">Refine Location (Manual)</h3>
-                <select id="parishSelect">
-                    <option value="">Select Parish</option>
-                    <option value="Kingston">Kingston</option>
-                    <option value="St. Andrew">St. Andrew</option>
-                    <option value="St. Thomas">St. Thomas</option>
-                    <option value="Portland">Portland</option>
-                    <option value="St. Mary">St. Mary</option>
-                    <option value="St. Ann">St. Ann</option>
-                    <option value="Trelawny">Trelawny</option>
-                    <option value="St. James">St. James</option>
-                    <option value="Hanover">Hanover</option>
-                    <option value="Westmoreland">Westmoreland</option>
-                    <option value="St. Elizabeth">St. Elizabeth</option>
-                    <option value="Manchester">Manchester</option>
-                    <option value="Clarendon">Clarendon</option>
-                    <option value="St. Catherine">St. Catherine</option>
-                </select>
-                <input type="text" id="communityInput" placeholder="Enter community name">
-                <button class="manual-submit" id="submitManualLocation">Update Location</button>
-            </div>
-            
-            <canvas id="canvas"></canvas>
-            
-            <div id="errorMsg"></div>
-            <div id="successMsg"></div>
-        </div>
-
-        <div class="feed-container">
-            <h2 class="feed-title">Recent Activity</h2>
-            <div id="activityFeed">
-                <div class="loading-feed">Loading reports...</div>
+            <div class="feed-container">
+                <h2 class="feed-title">
+                    <svg width="20" height="20" fill="var(--primary)" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V9h2v7zm4 0h-2V7h2v9z"></path></svg>
+                    Recent Activity
+                </h2>
+                <div id="activityFeed">
+                    <div class="loading-feed">Loading the latest reports...</div>
+                </div>
             </div>
         </div>
 
@@ -806,30 +958,41 @@ async function initCamera() {
                         activityFeed.innerHTML = '<div class="loading-feed">Could not load activity feed. Is the server running?</div>';
                     }
                 }
-
                 function renderFeed(reports) {
-                    if (!reports || reports.length === 0) {
-                        activityFeed.innerHTML = '<div class="loading-feed">No reports yet. Be the first to report pollution!</div>';
+                    if (reports.length === 0) {
+                        activityFeed.innerHTML = '<div class="loading-feed">No reports yet. Be the first to help!</div>';
                         return;
                     }
 
-                    activityFeed.innerHTML = reports.map(report => {
-                        const date = new Date(report.timestamp).toLocaleString();
-                        const googleMapsUrl = `https://www.google.com/maps?q=${report.latitude},${report.longitude}`;
+                    activityFeed.innerHTML = '';
+                    reports.forEach(report => {
+                        const card = document.createElement('div');
+                        card.className = 'report-card';
                         
-                        return `
-                            <div class="report-card">
-                                <img src="${report.imageUrl}" class="report-image" alt="Pollution">
-                                <div class="report-content">
-                                    <div class="report-desc">${report.description}</div>
-                                    <div class="report-meta">
-                                        <span>📍 <a href="${googleMapsUrl}" target="_blank" class="report-link">View on Google Maps</a> (${report.latitude.toFixed(4)}, ${report.longitude.toFixed(4)})</span>
-                                        <span>🕒 ${date}</span>
-                                    </div>
+                        // Parse date for relative time or clean format
+                        const date = new Date(report.createdAt);
+                        const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        const dateStr = date.toLocaleDateString();
+
+                        card.innerHTML = `
+                            <div class="report-image-container">
+                                <img src="${report.imageUrl}" alt="Pollution report">
+                            </div>
+                            <div class="report-info">
+                                <div class="report-desc">${report.description}</div>
+                                <div class="report-location">
+                                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>
+                                    Location Verified
                                 </div>
+                                <div class="report-time">${dateStr} at ${timeStr}</div>
+                                <a href="https://www.google.com/maps?q=${report.latitude},${report.longitude}" target="_blank" class="report-link">
+                                    View Map 
+                                    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6m4-3h6v6m-11 5L21 3"></path></svg>
+                                </a>
                             </div>
                         `;
-                    }).join('');
+                        activityFeed.appendChild(card);
+                    });
                 }
 
                 // Initialize everything
